@@ -5,12 +5,16 @@ using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
-    public CharacterController characterController;
-    public float speed = 5f;
+    private CharacterController characterController; //get the character controller 
+    private MouseController mouseController;
+    private float speed = 5f; //movement speed 
+    private Vector3 gravityDirection = Vector3.down; //initial direction of gravity in the beginning and if the character is grounded.
+
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        characterController = GetComponent<CharacterController>(); //get the character controller component
+        mouseController = GetComponent<MouseController>();
     }
 
     // Update is called once per frame
@@ -19,10 +23,12 @@ public class Movement : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        // Calculate movement direction, this doesnt take into account vertical movement
         Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput);
+        characterController.Move(movement * Time.deltaTime);
 
-        // Move the object
-        transform.Translate(movement * speed * Time.deltaTime);
+        if (mouseController != null )
+        {
+            mouseController.RotateCharacter();
+        }
     }
 }

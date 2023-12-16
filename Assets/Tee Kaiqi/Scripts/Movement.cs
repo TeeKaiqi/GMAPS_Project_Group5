@@ -7,13 +7,15 @@ public class Movement : MonoBehaviour
 {
     private CharacterController characterController; //get the character controller 
     private float speed = 5f; //movement speed 
-    private float rotationSpeed = 5f;
+    private Camera playerCamera;
+    public Vector2 turn;
     private Vector3 gravityDirection = Vector3.down; //initial direction of gravity in the beginning and if the character is grounded.
 
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>(); //get the character controller component
+        playerCamera = Camera.main;
     }
 
     // Update is called once per frame
@@ -22,10 +24,6 @@ public class Movement : MonoBehaviour
         HandleMovement();
         MouseRotation();
 
-        if (Input.GetButtonDown("Jump"))
-        {
-
-        }
     }
 
     public void HandleMovement ()
@@ -39,15 +37,8 @@ public class Movement : MonoBehaviour
 
     public void MouseRotation()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        //float mouseY = Input.GetAxis("Mouse Y");
-
-        transform.Rotate(Vector3.up * mouseX * rotationSpeed);
-        //transform.Rotate(Vector3.left* mouseY * rotationSpeed);
-    }
-
-    public void GravityChange()
-    {
-
+        turn.x += Input.GetAxis("Mouse X");
+        turn.y += Input.GetAxis("Mouse Y");
+        transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
     }
 }

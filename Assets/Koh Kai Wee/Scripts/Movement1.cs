@@ -9,7 +9,7 @@ public class Movement1 : MonoBehaviour
     public float playerSpeed = 5f;
     public float jump = 5f;
     public bool isGrounded;
-    public 
+    //public Camera camera;
 
     RaycastHit hit;
     LayerMask up;
@@ -57,22 +57,37 @@ public class Movement1 : MonoBehaviour
     public void Death()
     {   //If player falls past y=-20, y=20, x=-20, or x=20, they die
         if (30 < transform.position.y || transform.position.y < -30 || transform.position.x < -30 || 30 < transform.position.x)
-        {   
-            //Teleport back to start point
-            transform.position = new Vector3(0f, 1f, 0f);
+        {   //Teleport back to start point
+            transform.position = new Vector3(0f, -8f, 0f);
             Debug.Log("Player died");
         }
     }
 
     public void GravityShift()
     {
-        if (Physics.Raycast(transform.position, -transform.up, 125f, up))
-        {
-            //Set gravity to be upside down
-            //Physics.gravity = new Vector3(0f, -9.8f, 0f);
-            //rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
-            
+        if (Physics.Raycast(transform.position, transform.up, 50f, up))
+        {   //Set gravity to be upside down
+            rb.useGravity = false;
+            //Use AddForce to simulate upside down gravity
+            Physics.gravity = new Vector3(0f, 9.8f, 0f);
+            rb.AddForce(new Vector3(0f, 9.8f, 0f), ForceMode.Acceleration);
             Debug.Log("Player is in UP region");
+        }
+        else if (Physics.Raycast(transform.position, new Vector3(-1f, 0f, 0f), 50f, left))
+        {
+            rb.useGravity = false;
+            rb.AddForce(new Vector3(-9.8f, 0f, 0f), ForceMode.Acceleration);
+            Debug.Log("Player is in LEFT region");
+        }
+        else if (Physics.Raycast(transform.position, new Vector3(1f, 0f, 0f), 50f, right))
+        {
+            rb.useGravity = false;
+            rb.AddForce(new Vector3(9.8f, 0f, 0f), ForceMode.Acceleration);
+            Debug.Log("Player is in the RIGHT region");
+        }
+        else
+        {
+            rb.useGravity = true;
         }
     }
 }

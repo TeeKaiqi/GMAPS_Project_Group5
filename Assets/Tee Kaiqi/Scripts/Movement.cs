@@ -1,29 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
 public class Movement : MonoBehaviour
 {
-    private CharacterController characterController; //get the character controller 
+    private CharacterController characterController;
+
     private float speed = 5f; //movement speed 
-    private Camera playerCamera;
-    public Vector2 turn;
+    private float playerHeight = 1f;
+    public Transform orientation;
+
+    float horizontalInput;
+    float verticalInput;
+
+    public LayerMask GroundLayer;
+    bool grounded;
+
+    private Vector3 moveDirection;
     private Vector3 gravityDirection = Vector3.down; //initial direction of gravity in the beginning and if the character is grounded.
 
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<CharacterController>(); //get the character controller component
-        playerCamera = Camera.main;
+        characterController = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
         HandleMovement();
-        MouseRotation();
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight *0.5f + 0.3f, GroundLayer);
+        if (grounded)
+        {
 
+        }
     }
 
     public void HandleMovement ()
@@ -31,14 +43,14 @@ public class Movement : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput);
-        characterController.SimpleMove(movement * speed);
+        // Calculate the move direction in world space
+        Vector3 moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        // Apply speed
+        characterController.Move(moveDirection.normalized * speed * Time.deltaTime);
+
+        // Apply gravity
+        characterController.Move(Vector3.down * speed * Time.deltaTime);
     }
 
-    public void MouseRotation()
-    {
-        turn.x += Input.GetAxis("Mouse X");
-        turn.y += Input.GetAxis("Mouse Y");
-        transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
-    }
 }

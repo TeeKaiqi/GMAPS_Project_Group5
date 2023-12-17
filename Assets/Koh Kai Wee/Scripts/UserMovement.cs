@@ -50,10 +50,11 @@ public class UserMovement : MonoBehaviour
     //Method to handle player death
     public void Death()
     {   //If player falls past y=-20, y=20, x=-20, or x=20, they die
-        if (30 < transform.position.y || transform.position.y < -30 || transform.position.x < -30 || 30 < transform.position.x)
-        {   //Teleport back to start point
+        if (transform.position.y < -20 || 20 < transform.position.y || transform.position.x < -20 || 20 < transform.position.x)
+        {   //Reset gravity, player position and rotation
             Physics.gravity = new Vector3(0f, -9.8f, 0f);
             transform.position = new Vector3(0f, -8f, 0f);
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             Debug.Log("Player died");
         }
     }

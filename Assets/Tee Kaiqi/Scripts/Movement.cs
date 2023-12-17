@@ -15,11 +15,11 @@ public class Movement : MonoBehaviour
     float horizontalInput;
     float verticalInput;
 
-    public LayerMask GroundLayer;
-    bool grounded;
+    public LayerMask Floor;
+    bool isGrounded;
 
     private Vector3 moveDirection;
-    private Vector3 gravityDirection = Vector3.down; //initial direction of gravity in the beginning and if the character is grounded.
+    private Vector3 gravityDirection; //initial direction of gravity in the beginning and if the character is grounded.
 
     // Start is called before the first frame update
     void Start()
@@ -31,10 +31,11 @@ public class Movement : MonoBehaviour
     void Update()
     {
         HandleMovement();
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight *0.5f + 0.3f, GroundLayer);
-        if (grounded)
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.2f, Floor);
+        Debug.Log(isGrounded);
+        if (!isGrounded)
         {
-
+            gravityDirection = transform.forward;
         }
     }
 
@@ -50,7 +51,11 @@ public class Movement : MonoBehaviour
         characterController.Move(moveDirection.normalized * speed * Time.deltaTime);
 
         // Apply gravity
-        characterController.Move(Vector3.down * speed * Time.deltaTime);
+        characterController.Move(gravityDirection * speed * Time.deltaTime);
+
+        //Vector3 gravityDirection = orientation.forward;
+        //    velocity.y += Physics.gravity.y * Time.deltaTime;
+        //    characterController.Move(gravityDirection * velocity.y * Time.deltaTime);
     }
 
 }

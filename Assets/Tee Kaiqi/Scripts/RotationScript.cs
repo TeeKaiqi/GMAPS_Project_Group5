@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class CameraRotation : MonoBehaviour
+public class RotationScript : MonoBehaviour
 {
     public float sensX;
     public float sensY;
     float rotationX;
-    float rotationY;
+    float rotationY; //set the game object in inspector that holds the orientation of where the player is facing
 
-    public Transform orientation; //set the game object in inspector that holds the orientation of where the player is facing
+
 
     // Start is called before the first frame update
     void Start()
@@ -18,10 +19,9 @@ public class CameraRotation : MonoBehaviour
         Cursor.visible = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Rotate(Transform orientation)
     {
-        float mouseX= Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
         rotationY += mouseX;
@@ -31,5 +31,12 @@ public class CameraRotation : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);
         orientation.rotation = Quaternion.Euler(0, rotationY, 0);
+    }
+
+    public Vector3 ForwardDirection(Transform orientation)
+    {
+        Vector3 forwardDirection = orientation.forward;
+        Debug.Log("Forward Direction: " + forwardDirection);
+        return forwardDirection;
     }
 }

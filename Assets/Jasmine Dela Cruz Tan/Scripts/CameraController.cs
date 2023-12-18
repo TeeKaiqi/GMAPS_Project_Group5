@@ -26,6 +26,8 @@ public class CameraController : MonoBehaviour
 
         yRotation += mouseX;
         xRotation += mouseY;
+
+        //set camera rotation to limit 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); 
 
         //Rotate camera and orientation

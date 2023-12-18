@@ -5,24 +5,24 @@ using UnityEngine;
 public class UserMovement : MonoBehaviour
 {
     private Rigidbody rb;
-    private bool Rotated;
-
-    public float playerSpeed = 5f;
-    public float jump = 7.5f;
-    public bool isGrounded;
     public new Camera camera;
+    float playerSpeed = 5f;
+    float jump = 7.5f;
+    bool isGrounded;
+    Vector3 camOffset;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        //Set the default camera offset
+        camOffset = new Vector3(0f, 2f, -5f);
     }
 
     void Update()
     {
         Movement();
-        Death();
-        GravityShift();
-        camera.transform.rotation = transform.rotation;
+        CameraMovement(camOffset);
     }
 
     //Method to handle player movement
@@ -41,61 +41,84 @@ public class UserMovement : MonoBehaviour
             isGrounded = false;
         }
     }
-
     void OnCollisionStay()
     {
         isGrounded = true;
     }
 
-    //Method to handle player death
-    public void Death()
-    {   //If player falls past y=-20, y=20, x=-20, or x=20, they die
-        if (transform.position.y < -20 || 20 < transform.position.y || transform.position.x < -20 || 20 < transform.position.x)
-        {   //Reset gravity, player position and rotation
-            Physics.gravity = new Vector3(0f, -9.8f, 0f);
+    //Method to handle camera position and rotation
+    public void CameraMovement(Vector3 offset)
+    {
+        //Set the updated camera offset 
+        camera.transform.position = transform.position + offset;
+
+        //Set camera rotation to follow player rotation
+        camera.transform.rotation = transform.rotation;
+    }
+
+    //Handle player death
+    void OnTriggerExit(Collider other)
+    {
+        //Detect if player has fallen out of the main region
+        if (other.gameObject.name == "MainRegion")
+        {
+            //Reset gravity 
+            Physics.gravity = new Vector3(0f, -9.81f, 0f);
+
+            //Teleport player back to start position and reset rotation
             transform.position = new Vector3(0f, -8f, 0f);
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            Debug.Log("Player died");
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);  //Reset rotation
+
+            //Reset camera offset
+            camOffset = new Vector3(0f, 2f, -5f);
+
+            Debug.Log("You DIED");
         }
     }
 
-    //Method to handle shifting gravity
-    public void GravityShift()
-    {
-        if (transform.position.z > 15 && transform.position.z < 35)
-        {   //Set new gravity and player rotation to be upside down
-            Physics.gravity = new Vector3(0f, 9.8f, 0f);
+    //Check collision with region game objects
+    void OnTriggerEnter(Collider other)
+    {   
+        //Shifting gravity upside down if the player is in the upside down region
+        if (other.gameObject.name == "UpRegion")
+        {
+            //Set gravity to go upwards
+            Physics.gravity = new Vector3(0f, 9.81f, 0f);
+
+            //Rotate the player upside down
             transform.rotation = Quaternion.Euler(0f, 0f, 180f);
 
-            //Set new camera offset
-            camera.transform.position = transform.position + new Vector3(0f, -2f, -5f);
+            /*Set a new camera offset value, otherwise the camera 
+            would look like it's under the player*/
+            camOffset = new Vector3(0f, -2f, -5f);
+            //Debug.Log("Region collision test");
         }
-        else if (transform.position.z > 35 && transform.position.z < 55)
-        {   //Set new gravity and player rotation
-            Physics.gravity = new Vector3(-9.8f, 0f, 0f);
+
+        //Else if statements for other regions because I couldn't find a more efficient way :/
+        else if (other.gameObject.name == "LeftRegion")
+        {
+            //Set the gravity to move to the left
+            Physics.gravity = new Vector3(-9.81f, 0f, 0f);
             transform.rotation = Quaternion.Euler(0f, 0f, -90f);
-
-            //Set new camera offset
-            camera.transform.position = transform.position + new Vector3(2f, 0f, -5f);
+            camOffset = new Vector3(2f, 0f, -5f);
         }
-        else if (transform.position.z > 55 && transform.position.z < 75)
-        {   //Set new gravity and player rotation
-            Physics.gravity = new Vector3(9.8f, 0f, 0f);
+
+        //Set gravity to move to the right
+        else if (other.gameObject.name == "RightRegion")
+        {
+            //Set the gravity to move to the right
+            Physics.gravity = new Vector3(9.81f, 0f, 0f);
             transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-
-            //Set new camera offset
-            camera.transform.position = transform.position + new Vector3(-2f, 0f, -5f);
+            camOffset = new Vector3(-2f, 0f, -5f);
         }
-        else if (transform.position.z > 75)
-        {   //Reset gravity, player rotation, and camera offset
+
+        //Reset everything if player is in the win region
+        else if (other.gameObject.name == "WinRegion")
+        {
             Physics.gravity = new Vector3(0f, -9.8f, 0f);
             transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            camera.transform.position = transform.position + new Vector3(0f, 2f, -5f);
-            Debug.Log("You WON :)");
-        }
-        else
-        {
-            camera.transform.position = transform.position + new Vector3(0f, 2f, -5f);
+            camOffset = new Vector3(0f, 2f, -5f);
+            Debug.Log("You WON!");
         }
     }
 }

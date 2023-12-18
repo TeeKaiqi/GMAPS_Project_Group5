@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour
 
     private float speed = 5f; //movement speed 
     private float playerHeight = 1f;
+    private float jumpForce = 8f;
     public Transform orientation;
 
     float horizontalInput;
@@ -31,18 +32,36 @@ public class Movement : MonoBehaviour
     void Update()
     {
         HandleMovement();
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.2f, Floor);
-        Debug.Log(isGrounded);
-        if (!isGrounded)
-        {
-            gravityDirection = transform.forward;
-        }
+        CheckIfJump();
     }
 
     public void HandleMovement ()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+
+        isGrounded = characterController.isGrounded;
+
+        Debug.Log(characterController.isGrounded);
+
+        //if (characterController.isGrounded)
+        //{
+        //    gravityDirection = Vector3.down;
+
+        //}
+        //else
+        //{
+        //    gravityDirection = orientation.forward;
+        //}
+
+        if (!isGrounded)
+        {
+            gravityDirection = orientation.forward; // Set gravity direction to player's forward direction when airborne
+        }
+        else
+        {
+            gravityDirection = Vector3.down; // Reset gravity direction when grounded
+        }
 
         // Calculate the move direction in world space
         Vector3 moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -58,4 +77,11 @@ public class Movement : MonoBehaviour
         //    characterController.Move(gravityDirection * velocity.y * Time.deltaTime);
     }
 
+    public void CheckIfJump()
+    {
+        if (characterController.isGrounded && Input.GetButton("Jump"))
+        {
+            characterController.Move(Vector3.up * jumpForce * Time.deltaTime);
+        }
+    }
 }

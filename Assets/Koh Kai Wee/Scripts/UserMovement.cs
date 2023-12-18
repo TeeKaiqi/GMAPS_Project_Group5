@@ -10,7 +10,7 @@ public class UserMovement : MonoBehaviour
     public float playerSpeed = 5f;
     public float jump = 7.5f;
     public bool isGrounded;
-    public Camera camera;
+    public new Camera camera;
 
     void Start()
     {

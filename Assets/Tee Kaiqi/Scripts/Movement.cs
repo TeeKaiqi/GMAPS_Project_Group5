@@ -15,6 +15,7 @@ public class Movement : MonoBehaviour
     private Vector3 gravityDirection; //initial direction of gravity in the beginning and if the character is grounded.
 
     public Transform orientation; //the game object that has the information on the orientation of the character
+    public LayerMask floorLayer;
 
     float horizontalInput;
     float verticalInput;
@@ -23,7 +24,6 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Character start pos" + transform.position);
         characterController = GetComponent<CharacterController>(); //get charactercontroller component
         rotationScript = GetComponent<RotationScript>(); //get rotationscript component
     }
@@ -31,14 +31,24 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        rotationScript.Rotate(orientation);
         HandleMovement(); //Calls the function that handles all the movement
         CheckIfJump(); //Calls the function that checks if the space bar is pressed 
     }
 
     public void HandleMovement()
     {
-        isGrounded = characterController.isGrounded;
-        Debug.Log(isGrounded);
+        //Debug.Log("Character pos" + transform.position);
+        if (Physics.Raycast(transform.position, Vector3.down, 1f, floorLayer))
+        {
+            isGrounded = true;
+            Debug.Log(isGrounded);
+        }
+        else
+        {
+            isGrounded= false;
+            Debug.Log(isGrounded);
+        }
 
         float horizontalInput = Input.GetAxis("Horizontal"); 
         float verticalInput = Input.GetAxis("Vertical");

@@ -23,13 +23,17 @@ public class PlayerMovement : MonoBehaviour
     bool grounded;
 
     //jump 
-    public float jumpForce = 8.0f; 
+    public float jumpForce = 8.0f;
+
+    //gravity
+    bool isGravityInverted = false;
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
     }
 
     // Update is called once per frame
@@ -45,10 +49,16 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.drag = drag;
             
-            // Check for jump input (spacebar)
+            // jump
             if (Input.GetButtonDown("Jump"))
             {
                 Jump();
+                
+            }
+            // Check for gravity inversion
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                InvertGravity();
             }
         }
         else
@@ -68,10 +78,21 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
-        // check if player is grounded before allowing the jump
-        if (grounded)
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    void InvertGravity()
+    {
+        isGravityInverted = !isGravityInverted;
+
+        // Enable or disable gravity based on the isGravityInverted flag
+        rb.useGravity = !isGravityInverted;
+
+        //rotate player 180
+        if (isGravityInverted)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            transform.Rotate(Vector3.forward, 180f);
         }
     }
+
 }

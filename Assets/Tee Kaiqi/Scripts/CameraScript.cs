@@ -12,9 +12,6 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         rotation = GetComponent<RotationScript>();
-
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
     }
 
 // Update is called once per frame

@@ -19,9 +19,11 @@ public class Movement : MonoBehaviour
     float horizontalInput;
     float verticalInput;
 
+
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Character start pos" + transform.position);
         characterController = GetComponent<CharacterController>(); //get charactercontroller component
         rotationScript = GetComponent<RotationScript>(); //get rotationscript component
     }
@@ -33,22 +35,22 @@ public class Movement : MonoBehaviour
         CheckIfJump(); //Calls the function that checks if the space bar is pressed 
     }
 
-    public void HandleMovement ()
+    public void HandleMovement()
     {
+        isGrounded = characterController.isGrounded;
+        Debug.Log(isGrounded);
+
         float horizontalInput = Input.GetAxis("Horizontal"); 
         float verticalInput = Input.GetAxis("Vertical");
 
-        isGrounded = characterController.isGrounded;
-
-        Debug.Log(characterController.isGrounded);
-
-        if (!isGrounded)
+        if (isGrounded)
         {
-            gravityDirection = rotationScript.ForwardDirection(orientation); // Use the rotation script to get the forward direction
+            gravityDirection = Vector3.down; // Reset gravity direction when grounded
         }
         else
         {
-            gravityDirection = Vector3.down; // Reset gravity direction when grounded
+            Vector3 gravityDirection = rotationScript.ForwardDirection(orientation); // Use the rotation script to get the forward direction
+            //Debug.Log(gravityDirection);
         }
 
         // Calculate the move direction in world space
@@ -63,9 +65,11 @@ public class Movement : MonoBehaviour
 
     public void CheckIfJump()
     {
-        if (characterController.isGrounded && Input.GetButton("Jump"))
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            characterController.Move(Vector3.up * jumpForce * Time.deltaTime);
+            float u = Mathf.Sqrt(-2 * Physics.gravity.y * jumpForce);
+            Vector3 jumpVelocity = Vector3.up * u;
+            characterController.Move(jumpVelocity * Time.deltaTime);
         }
     }
 }

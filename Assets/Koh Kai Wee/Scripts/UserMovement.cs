@@ -6,8 +6,11 @@ public class UserMovement : MonoBehaviour
 {
     private Rigidbody rb;
     public new Camera camera;
+
+    //Set player speed and jump values
     float playerSpeed = 5f;
     float jump = 7.5f;
+
     bool isGrounded;
     Vector3 camOffset;
 
@@ -37,6 +40,7 @@ public class UserMovement : MonoBehaviour
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+            //Use AddForce to simulate jumps
             rb.AddForce(transform.up * jump, ForceMode.Impulse);
             isGrounded = false;
         }
@@ -72,7 +76,7 @@ public class UserMovement : MonoBehaviour
             //Reset camera offset
             camOffset = new Vector3(0f, 2f, -5f);
 
-            Debug.Log("You DIED");
+            Debug.Log("You DIED!");
         }
     }
 
@@ -91,7 +95,8 @@ public class UserMovement : MonoBehaviour
             /*Set a new camera offset value, otherwise the camera 
             would look like it's under the player*/
             camOffset = new Vector3(0f, -2f, -5f);
-            //Debug.Log("Region collision test");
+
+            Debug.Log("Gravity is now pulling upwards.");
         }
 
         //Else if statements for other regions because I couldn't find a more efficient way :/
@@ -101,6 +106,7 @@ public class UserMovement : MonoBehaviour
             Physics.gravity = new Vector3(-9.81f, 0f, 0f);
             transform.rotation = Quaternion.Euler(0f, 0f, -90f);
             camOffset = new Vector3(2f, 0f, -5f);
+            Debug.Log("Gravity is now pulling to the left.");
         }
 
         //Set gravity to move to the right
@@ -110,12 +116,13 @@ public class UserMovement : MonoBehaviour
             Physics.gravity = new Vector3(9.81f, 0f, 0f);
             transform.rotation = Quaternion.Euler(0f, 0f, 90f);
             camOffset = new Vector3(-2f, 0f, -5f);
+            Debug.Log("Gravity is now pulling to the right.");
         }
 
         //Reset everything if player is in the win region
         else if (other.gameObject.name == "WinRegion")
         {
-            Physics.gravity = new Vector3(0f, -9.8f, 0f);
+            Physics.gravity = new Vector3(0f, -9.81f, 0f);
             transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             camOffset = new Vector3(0f, 2f, -5f);
             Debug.Log("You WON!");

@@ -814,13 +814,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022283954}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac215a1cfd946904fa89aee3c07fe5d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orientation: {fileID: 0}
-  target: {fileID: 0}
+  orientation: {fileID: 878685115}
+  target: {fileID: 1741636022}
 --- !u!81 &2022283956
 AudioListener:
   m_ObjectHideFlags: 0
@@ -902,13 +902,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022283954}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edfc3ab4dd82b1845adf3ab6dcdd9fcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 100
-  sensY: 100
+  sensX: 200
+  sensY: 200
   rotationX: 0
   rotationY: 0
 --- !u!1 &2034811773

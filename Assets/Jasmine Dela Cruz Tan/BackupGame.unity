@@ -2691,13 +2691,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  orientation: {fileID: 1285546949}
+  jumpForce: 8
   drag: 5
   playerHeight: 0
   GroundPresent:
     serializedVersion: 2
     m_Bits: 0
-  jumpForce: 8
+  orientation: {fileID: 1285546949}
 --- !u!1 &1990415264
 GameObject:
   m_ObjectHideFlags: 0

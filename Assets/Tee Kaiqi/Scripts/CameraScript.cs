@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-    public Transform orientation;
-    private RotationScript rotation;
-    public Transform target;
+    public Transform orientation; //takes the orientation game object 
+    private RotationScript rotation; //references rotationscript 
+    public Transform target; //set the character as the target in the inspector
 
     // Start is called before the first frame update
     void Start()
     {
-        rotation = GetComponent<RotationScript>();
+        rotation = GetComponent<RotationScript>(); //get the rotation script
     }
 
 // Update is called once per frame
     void Update()
     {
-        transform.position = target.position;
+        transform.position = target.position; //change the position of the camera to the position of the target (character)
         rotation.Rotate(orientation);
     }
 }

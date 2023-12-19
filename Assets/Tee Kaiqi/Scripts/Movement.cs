@@ -15,18 +15,16 @@ public class Movement : MonoBehaviour
     private Vector3 gravityDirection; //initial direction of gravity in the beginning and if the character is grounded.
 
     public Transform orientation; //the game object that has the information on the orientation of the character
-    public LayerMask floorLayer;
-    public Camera playerCamera;
+    public LayerMask floorLayer; //the floor layer that will be used in the physics raycast to check if the player is grounded
+    public Camera playerCamera; //camera component
 
     float horizontalInput;
     float verticalInput;
-
 
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>(); //get charactercontroller component
-        rotationScript = GetComponent<RotationScript>(); //get rotationscript component
         playerCamera = Camera.main;
     }
 
@@ -39,71 +37,34 @@ public class Movement : MonoBehaviour
 
     public void HandleMovement()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.2f, floorLayer);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.2f, floorLayer); //casts a raycast down from the player's feet and if there's a hit, isGrounded == true
 
-        if (!isGrounded)
+        if (!isGrounded) //if the character is not grounded
         {
-            // Character is airborne
-            Vector3 gravityDirection = playerCamera.transform.forward; // Opposite of camera's forward direction
+            Vector3 gravityDirection = playerCamera.transform.forward; //set the direction of the gravity to be the forward direction of where the camera is looking
             Debug.Log(gravityDirection);
 
-            // Apply gravity in the opposite direction
-            characterController.Move(gravityDirection * speed * Time.deltaTime);
+            characterController.Move(gravityDirection * speed * Time.deltaTime); //move the character controller in the gravitydirection
         }
-        else
+        else //When the character is grounded
         {
-            // Character is grounded
-            float horizontalInput = Input.GetAxis("Horizontal");
+            float horizontalInput = Input.GetAxis("Horizontal"); //gets the user input
             float verticalInput = Input.GetAxis("Vertical");
 
-            // Calculate the move direction in world space
-            Vector3 moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            Vector3 moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput; 
+            //calculates the move direction by adding the vertical and horizontal input to the gameobject orientation's direction. This makes it so that the movement will be relative to the character in the world space
 
-            // Apply speed
-            characterController.Move(moveDirection.normalized * speed * Time.deltaTime);
+            characterController.Move(moveDirection.normalized * speed * Time.deltaTime); //move the character by multiplied the normalised move direction, speed and time  
         }
     }
 
-
-    public void CheckIfJump()
+    public void CheckIfJump() //method that checks if the player pressed space to jump
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            float u = Mathf.Sqrt(-2 * Physics.gravity.y * jumpForce);
-            Vector3 jumpVelocity = Vector3.up * u;
-            characterController.Move(jumpVelocity * Time.deltaTime);
+            float u = Mathf.Sqrt(-2 * Physics.gravity.y * jumpForce); //calculation of the float based on the formula from the jump height physics worksheet 
+            Vector3 jumpVelocity = Vector3.up * u; //multiply the up vector by the u force and set that as the jump velocity
+            characterController.Move(jumpVelocity * Time.deltaTime); //moves the character 
         }
     }
 }
-
-//public void HandleMovement()
-//{
-//    isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.2f, floorLayer);
-//    if (isGrounded)
-//    {
-//        Debug.Log("Character is grounded" + isGrounded);
-//    }
-//    else
-//    {
-//        Vector3 gravityDirection = -rotationScript.ForwardDirection(orientation); // Opposite of camera's forward direction
-
-//        // Apply gravity in the opposite direction
-//        characterController.Move(gravityDirection * speed * Time.deltaTime);
-
-//        Debug.Log("Character is not grounded" + isGrounded);
-
-//        Debug.Log("Gravity direction when airborne is: " +  gravityDirection);
-//    }
-
-//    float horizontalInput = Input.GetAxis("Horizontal"); 
-//    float verticalInput = Input.GetAxis("Vertical");
-
-//    // Calculate the move direction in world space
-//    Vector3 moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-//    // Apply speed
-//    characterController.Move(moveDirection.normalized * speed * Time.deltaTime);
-
-//    // Apply gravity
-//    characterController.Move(gravityDirection * speed * Time.deltaTime); 
-//}

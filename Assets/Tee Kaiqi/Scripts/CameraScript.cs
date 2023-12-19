@@ -18,6 +18,6 @@ public class CameraScript : MonoBehaviour
     void Update()
     {
         transform.position = target.position; //change the position of the camera to the position of the target (character)
-        rotation.Rotate(orientation);
+        rotation.Rotate(orientation); //rotate the camera accordingly by calling the rotate function from the rotationscript and passing in the orientation of the player
     }
 }

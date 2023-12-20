@@ -7,9 +7,6 @@ public class PlayerMoving : MonoBehaviour
     // Player speed
     public float speed = 4.0f;
 
-    // Jump force 
-    public float jumpForce = 8.0f;
-
     // Indicates whether gravity is inverted
     private bool GravityInverted = false;
 

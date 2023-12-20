@@ -101,7 +101,7 @@ public class PlayerMoving : MonoBehaviour
             Physics.gravity = GravityInverted ? new Vector3(0f, -9.81f, 0f) : new Vector3(0f, 9.81f, 0f); 
 
             //make raycast longer
-            float raycastDistance = 2f;
+            float raycastDistance = 1f;
             Vector3 raycastDirection = GravityInverted ? Vector3.down : Vector3.up; //raycast is casted upwards but if gravity is inverted , ray cast will cast downward
 
             if (Physics.Raycast(transform.position, raycastDirection, out hit, raycastDistance))
